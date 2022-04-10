@@ -1,4 +1,4 @@
-package edu.oswego.cs.encryptedvoicechat;
+package edu.oswego.cs;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
