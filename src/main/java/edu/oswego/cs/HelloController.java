@@ -1,4 +1,4 @@
-package edu.oswego.cs.encryptedvoicechat;
+package edu.oswego.cs;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
