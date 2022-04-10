@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?scenebuilder-stylesheet application-styles.css?>
 
-<?import javafx.scene.control.Button?>
-<!--<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"-->
-<!--      fx:controller="edu.oswego.cs.encryptedvoicechat.HelloController">-->
-<!--    -->
-<!--</VBox>-->
-
-<Label text="Hello"/>
+<Label styleClass="text-section" text="Hello"/>
