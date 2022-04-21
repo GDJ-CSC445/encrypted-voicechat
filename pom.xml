@@ -96,7 +96,8 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                edu.oswego.cs.encryptedvoicechat/edu.oswego.cs.EncryptedVoiceChatApplication
+
+                                edu.oswego.cs.encryptedvoicechat/edu.oswego.cs.EncryptedVoiceChat
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
