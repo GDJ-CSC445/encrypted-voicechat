@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.Label?>
-<?scenebuilder-stylesheet application-styles.css?>
-
-<Label styleClass="text-section" text="Hello"/>
