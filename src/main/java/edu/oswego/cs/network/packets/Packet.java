@@ -28,6 +28,7 @@ public abstract class Packet {
             case END: return PacketFactory.parseEndPacket(bytes);
             case ERR: ;
             case PARTICIPANT_ACK: return PacketFactory.parseParticipantACKPacket(bytes);
+            case DEBUG: return PacketFactory.parseDebugPacket(bytes);
             default: ;
         }
         return null;
@@ -85,6 +86,13 @@ public abstract class Packet {
             byte[] soundBytes = Arrays.copyOfRange(bytes ,6, bytes.length);
 
             return new SoundData(port, soundBytes, seqenceNumber);
+        }
+
+        public static DebugPacket parseDebugPacket(byte[] bytes) {
+            int port = new BigInteger( new byte[]{bytes[2], bytes[3]} ).intValue();
+            String msg = new String(Arrays.copyOfRange(bytes, 4, bytes.length));
+
+            return new DebugPacket(port, msg);
         }
 
         public static EndPacket parseEndPacket(byte[] bytes) {
