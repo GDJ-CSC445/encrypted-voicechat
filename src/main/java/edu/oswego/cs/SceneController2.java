@@ -6,59 +6,55 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
 
-public class SceneController {
+public class SceneController2 {
 
+    private Parent root;
     private Stage stage;
     private Scene scene;
-    private Parent root;
+    public Label connectedToLabel = null;
 
-    public Button listServer;
-
-    @FXML
-    protected void onHelloButtonClick() {
-        System.out.println("Welcome to JavaFX Application!");
-    }
 
     @FXML
-    public void something1() {
-        System.out.println("Welcome to JavaFX Application!");
-    }
-
     public void switchToMainMenu(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainMenu.fxml")));
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainMenu2.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
+    @FXML
     public void switchCreateServer(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("CreateServer.fxml")));
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("CreateServer.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
+    @FXML
     public void switchToServerList(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ListServer.fxml")));
+
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ListServer.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
+    @FXML
     public void switchToActiveChat(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
+
 }
