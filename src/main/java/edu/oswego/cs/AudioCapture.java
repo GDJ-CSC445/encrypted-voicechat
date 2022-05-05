@@ -31,7 +31,7 @@ public class AudioCapture{
     }
 
     //capture sound from microphone and record into WAV file
-    public void start() {
+    public void start() { ///dose this happens when the hit the mic button?
         try {
             AudioFormat format = getAudioFormat();
             DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
@@ -39,7 +39,7 @@ public class AudioCapture{
             //checks if system supports data line
             if (!AudioSystem.isLineSupported(info)) {
                 System.out.println("Line not supported, setting Audio Format...");
-                new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 1, 2 , 44100, false);
+                new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 1, 2, 44100, false);
             }
             dataLine = (TargetDataLine) AudioSystem.getLine(info);
             dataLine.open(format);

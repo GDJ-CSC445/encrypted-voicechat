@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 
 public class VoiceClient {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {      // this looks to be the client? like when ur actually in the server?
         Socket socket;
         String host = "localhost";
         int port = 29600;
@@ -30,7 +30,7 @@ public class VoiceClient {
 
 
         } catch (UnknownHostException e) {
-            System.out.println("Unknown host.");
+            System.out.println("Unknown host."); //this happens where?
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();

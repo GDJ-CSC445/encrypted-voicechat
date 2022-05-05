@@ -8,12 +8,12 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
-<Pane id="P" fx:id="mainMenu" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+<Pane id="P" fx:id="mainMenu1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
       prefHeight="187.0" prefWidth="460.0" stylesheets="@application-styles.css" xmlns="http://javafx.com/javafx/11.0.2"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oswego.cs.SceneController">
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oswego.cs.SceneController1">
    <children>
-      <Label alignment="BASELINE_LEFT" layoutX="257.0" layoutY="14.0" prefHeight="32.0" prefWidth="189.0"
-             text="Connected to Mocie.cs.oswego.edu" textAlignment="CENTER" textFill="#0f9413">
+      <Label fx:id="connectedToLabel" alignment="BASELINE_LEFT" layoutX="236.0" layoutY="14.0" prefHeight="32.0"
+             prefWidth="210.0" text="Connected to Moxie.cs.oswego.edu" textAlignment="CENTER" textFill="#bbbbbb">
          <opaqueInsets>
             <Insets/>
          </opaqueInsets>
@@ -32,7 +32,7 @@
             <Font name="Comic Sans MS Bold" size="12.0"/>
          </font>
       </Button>
-      <Rectangle id="Rec" arcHeight="5.0" arcWidth="5.0" fill="#b8d7f5" height="32.0" layoutX="249.0" layoutY="14.0"
+      <Rectangle id="Rec" arcHeight="5.0" arcWidth="5.0" fill="#b8d7f5" height="32.0" layoutX="233.0" layoutY="14.0"
                  opacity="0.5" stroke="#b7d7f5" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="5.0"
                  width="205.0"/>
    </children>

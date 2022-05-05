@@ -6,16 +6,12 @@
 <?import javafx.scene.text.*?>
 <Pane id="P" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
       prefWidth="600.0" stylesheets="@application-styles.css" xmlns="http://javafx.com/javafx/11.0.2"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oswego.cs.SceneController">
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oswego.cs.SceneController1">
    <opaqueInsets>
       <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
    </opaqueInsets>
    <children>
-      <ScrollPane hbarPolicy="NEVER" layoutX="100.0" layoutY="130.0" prefHeight="200.0" prefWidth="400.0">
-         <content>
-            <ListView id="LV" prefHeight="200.0" prefWidth="385.0"/>
-         </content>
-      </ScrollPane>
+      <ListView id="LV" fx:id="listOfChatRooms" layoutX="100.0" layoutY="130.0" prefHeight="200.0" prefWidth="385.0"/>
       <Label layoutX="26.0" layoutY="25.0" prefHeight="66.0" prefWidth="274.0" text="Chat Servers" textFill="WHITE">
          <font>
             <Font size="45.0"/>
