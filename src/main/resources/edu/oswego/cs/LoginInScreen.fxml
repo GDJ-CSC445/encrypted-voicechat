@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<Pane id="P" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="600.0" stylesheets="@application-styles.css" xmlns="http://javafx.com/javafx/11.0.2"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oswego.cs.SceneController1">
+    <opaqueInsets>
+        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
+    </opaqueInsets>
+    <children>
+        <Label layoutX="26.0" layoutY="25.0" prefHeight="66.0" prefWidth="434.0" text="Login with Password"
+               textFill="WHITE">
+            <font>
+                <Font size="45.0"/>
+            </font>
+        </Label>
+        <Button id="B" fx:id="backBotton" layoutX="101.0" layoutY="335.0" mnemonicParsing="false"
+                onAction="#switchToMainMenu" prefHeight="39.0" prefWidth="103.0" text="Back">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Button>
+        <Button id="B" fx:id="createButton" layoutX="404.0" layoutY="335.0" mnemonicParsing="false"
+                onAction="#switchToActiveChat" prefHeight="39.0" prefWidth="103.0" text="Login">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Button>
+        <TextField fx:id="PasswordTextFeild" layoutX="250.0" layoutY="187.0" prefHeight="25.0" prefWidth="154.0">
+            <rotationAxis>
+                <Point3D/>
+            </rotationAxis>
+        </TextField>
+        <Label fx:id="Password" layoutX="152.0" layoutY="185.0" text="Password:" textFill="WHITE">
+            <font>
+                <Font size="20.0"/>
+            </font>
+        </Label>
+    </children>
+</Pane>

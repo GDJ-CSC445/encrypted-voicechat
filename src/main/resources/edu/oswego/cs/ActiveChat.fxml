@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <Pane id="P" fx:id="ActiveChatPane" prefHeight="256.0" prefWidth="400.0" stylesheets="@application-styles.css"
       xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="edu.oswego.cs.SceneController">
+      fx:controller="edu.oswego.cs.SceneController1">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b7d7f5" height="136.0" layoutX="20.0" layoutY="60.0"
                  opacity="0.5" stroke="#b7d7f5" strokeDashOffset="-1.0" strokeLineCap="ROUND" strokeLineJoin="ROUND"
