@@ -6,7 +6,8 @@ public enum ParticipantOpcode {
     JOIN(0),
     OTHER_JOIN(1),
     CREATE_SERVER(2),
-    LIST_SERVERS(3);
+    LIST_SERVERS(3),
+    LEAVE(4);
     private final int opcodeInt;
 
     ParticipantOpcode(int opcodeInt) {
@@ -23,6 +24,7 @@ public enum ParticipantOpcode {
             case  1: return OTHER_JOIN;
             case  2: return CREATE_SERVER;
             case  3: return LIST_SERVERS;
+            case  4: return LEAVE;
             default: return UNDEF;
         }
     }
