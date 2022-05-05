@@ -9,19 +9,30 @@ import java.util.List;
 
 /*
 
-  +-----------------------------------+
-  |                 |                 |
-  |      Opcode     |     Src Port    |
-  |                 |                 |
-  +-----------------------------------+
-        2 Bytes           2 Bytes
+  +-----------------------------------+----------------+
+  |                 |                 |                |
+  |      Opcode     |     src Port    |       msg      |
+  |                 |                 |                |
+  +-----------------------------------+----------------+
+        2 Bytes           2 Bytes           N Bytes
 
  */
-public class EndPacket extends Packet {
+public class DebugPacket extends Packet {
     private final int port;
-    public EndPacket(int port) {
-        super(PacketOpcode.END);
+    private final String msg;
+
+    public DebugPacket(int port, String msg) {
+        super(PacketOpcode.DEBUG);
         this.port = port;
+        this.msg = msg;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getMsg() {
+        return msg;
     }
 
     @Override
@@ -32,6 +43,7 @@ public class EndPacket extends Packet {
         Collections.addAll(byteList , (byte) 0, (byte) opcode.getInt());
         if (port > 255) byteList.addAll(Packet.arrayToList(portBytes));
         else            Collections.addAll(byteList, (byte) 0, (byte) port);
+        byteList.addAll(Packet.arrayToList(msg.getBytes()));
 
         return Packet.listToArray(byteList);
     }

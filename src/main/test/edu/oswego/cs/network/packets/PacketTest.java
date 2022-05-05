@@ -61,4 +61,22 @@ public class PacketTest {
 
     }
 
+    @Test
+    public void soundDataParserTest() {
+        int port = 1551;
+        byte[] soundData = new byte[]{1, 2, 3};
+        SoundData expectedSoundData = new SoundData(port, soundData, 1);
+
+        Packet packet = Packet.parse(expectedSoundData.getBytes());
+        assertNotNull(packet, "Sound data parser returns null");
+
+        assertTrue(packet instanceof SoundData);
+
+        SoundData actualSoundData = (SoundData) packet;
+
+        assertArrayEquals(expectedSoundData.getBytes(), actualSoundData.getBytes(), "Byte parsing is not correct.");
+        assertArrayEquals(expectedSoundData.getData(), actualSoundData.getData(), "Sound data not parsed correctly.");
+
+    }
+
 }
