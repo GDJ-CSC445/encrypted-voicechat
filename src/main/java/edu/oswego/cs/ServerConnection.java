@@ -195,23 +195,6 @@ public class ServerConnection implements Runnable {
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
-                while (finalSocket.isConnected()) {
-                    try {
-
-                        byte[] buffer = new byte[1024];
-                        in.read(buffer);
-                        Packet packet = Packet.parse(buffer);
-                        if (packet instanceof ParticipantACK) {
-                            ParticipantACK participantACK = (ParticipantACK) packet;
-                            for (String param : participantACK.getParams()) {
-                                System.out.println(param);
-                            }
-                        }
-                        buffer = new byte[]{};
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
             return socket;
         }

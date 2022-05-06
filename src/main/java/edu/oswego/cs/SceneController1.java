@@ -4,7 +4,6 @@ import edu.oswego.cs.network.opcodes.ParticipantOpcode;
 import edu.oswego.cs.network.packets.Packet;
 import edu.oswego.cs.network.packets.ParticipantACK;
 import edu.oswego.cs.network.packets.ParticipantData;
-import javafx.collections.ModifiableObservableListBase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,8 +17,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class SceneController1 {
@@ -29,8 +26,6 @@ public class SceneController1 {
     private Stage stage;
     private Scene scene;
     public Label connectedToLabel = null;
-    public ModifiableObservableListBase<String> listProperty = null;
-    public ArrayList<String> listOfChatRooms = new ArrayList<>();
 
     @FXML
     public void switchToMainMenu(ActionEvent event) throws IOException {
@@ -58,9 +53,9 @@ public class SceneController1 {
         ListView lv = (ListView) root.getChildrenUnmodifiable().get(0);
 
         ParticipantData participantData = new ParticipantData(ParticipantOpcode.LIST_SERVERS, 15551);
-        EncryptedVoiceChat.socket_t.getOutputStream().write(participantData.getBytes());
+        EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
         byte[] buffer = new byte[1024];
-        EncryptedVoiceChat.socket_t.getInputStream().read(buffer);
+        EncryptedVoiceChat.socket.getInputStream().read(buffer);
         Packet packet = Packet.parse(buffer);
         ParticipantACK participantACK = (ParticipantACK) packet;
         for (String param : participantACK.getParams())
