@@ -7,7 +7,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Objects;
 
@@ -19,9 +21,11 @@ public class EncryptedVoiceChat extends Application {
     Parent root;
     Scene scene;
     Socket socket;
+    static Socket socket_t;
+    static int port;
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws IOException, InterruptedException {
 
         window = stage;
         stage.setTitle("Main Menu");
@@ -61,9 +65,16 @@ public class EncryptedVoiceChat extends Application {
             e.printStackTrace();
         }
 
-        Thread th = new Thread(connServ.task1);
-        th.setDaemon(true);
-        th.start();
+        socket_t = new Socket("moxie.cs.oswego.edu", 15551);
+        BufferedReader input = new BufferedReader(new InputStreamReader(socket_t.getInputStream()));
+        int port = Integer.parseInt(input.readLine());
+        Thread.sleep(1000);
+        socket_t.close();
+        socket_t = new Socket("moxie.cs.oswego.edu", port);
+
+        //Thread th = new Thread(connServ.task1);
+        //th.setDaemon(true);
+        //th.start();
 
     }
 

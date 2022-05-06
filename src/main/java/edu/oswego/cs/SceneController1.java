@@ -1,5 +1,9 @@
 package edu.oswego.cs;
 
+import edu.oswego.cs.network.opcodes.ParticipantOpcode;
+import edu.oswego.cs.network.packets.Packet;
+import edu.oswego.cs.network.packets.ParticipantACK;
+import edu.oswego.cs.network.packets.ParticipantData;
 import javafx.collections.ModifiableObservableListBase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -7,15 +11,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class SceneController1 {
 
+    public Button listServer;
     private Parent root;
     private Stage stage;
     private Scene scene;
@@ -45,7 +54,20 @@ public class SceneController1 {
     public void switchToServerList(ActionEvent event) throws IOException {
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ListServer.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
+        root.getChildrenUnmodifiable().stream().map(x->x.getId()).forEach(System.out::println);
+        ListView lv = (ListView) root.getChildrenUnmodifiable().get(0);
+
+        ParticipantData participantData = new ParticipantData(ParticipantOpcode.LIST_SERVERS, 15551);
+        EncryptedVoiceChat.socket_t.getOutputStream().write(participantData.getBytes());
+        byte[] buffer = new byte[1024];
+        EncryptedVoiceChat.socket_t.getInputStream().read(buffer);
+        Packet packet = Packet.parse(buffer);
+        ParticipantACK participantACK = (ParticipantACK) packet;
+        for (String param : participantACK.getParams())
+            lv.getItems().add(param);
+
+        HBox hbox = new HBox(root);
+        scene = new Scene(hbox);
         stage.setScene(scene);
         stage.show();
     }
@@ -58,6 +80,7 @@ public class SceneController1 {
         stage.setScene(scene);
         stage.show();
     }
+
 
     /*    @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

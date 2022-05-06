@@ -52,12 +52,12 @@ public class ServerConnection implements Runnable {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        Socket socket = new Socket("pi.cs.oswego.edu", 15551);
+        Socket socket = new Socket("moxie.cs.oswego.edu", 15551);
         BufferedReader inport = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         int port = Integer.parseInt(inport.readLine());
         Thread.sleep(1000);
         socket.close();
-        socket = new Socket("pi.cs.oswego.edu", port);
+        socket = new Socket("moxie.cs.oswego.edu", port);
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         InputStream in = socket.getInputStream();
 

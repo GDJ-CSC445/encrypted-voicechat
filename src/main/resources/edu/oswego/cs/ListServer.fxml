@@ -11,7 +11,7 @@
       <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
    </opaqueInsets>
    <children>
-      <ListView id="LV" fx:id="listOfChatRooms" layoutX="100.0" layoutY="130.0" prefHeight="200.0" prefWidth="385.0"/>
+      <ListView id="LV" layoutX="100.0" layoutY="130.0" prefHeight="200.0" prefWidth="385.0"/>
       <Label layoutX="26.0" layoutY="25.0" prefHeight="66.0" prefWidth="274.0" text="Chat Servers" textFill="WHITE">
          <font>
             <Font size="45.0"/>
@@ -34,7 +34,7 @@
          </font>
       </Button>
       <Button id="B" layoutX="249.0" layoutY="340.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="103.0"
-              text="Refresh">
+              onAction="#switchToServerList" text="Refresh">
          <font>
             <Font size="18.0"/>
          </font>
