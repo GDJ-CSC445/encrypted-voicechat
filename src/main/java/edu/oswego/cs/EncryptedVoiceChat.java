@@ -2,16 +2,17 @@ package edu.oswego.cs;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 ;
 
@@ -20,12 +21,12 @@ public class EncryptedVoiceChat extends Application {
     Stage window;
     Parent root;
     Scene scene;
-    Socket socket;
+    static Socket socket;
     static Socket socket_t;
     static int port;
 
     @Override
-    public void start(Stage stage) throws IOException, InterruptedException {
+    public void start(Stage stage) throws IOException, InterruptedException, ExecutionException {
 
         window = stage;
         stage.setTitle("Main Menu");
@@ -65,16 +66,22 @@ public class EncryptedVoiceChat extends Application {
             e.printStackTrace();
         }
 
-        socket_t = new Socket("moxie.cs.oswego.edu", 15551);
+        /*socket_t = new Socket("moxie.cs.oswego.edu", 15551);
         BufferedReader input = new BufferedReader(new InputStreamReader(socket_t.getInputStream()));
         int port = Integer.parseInt(input.readLine());
         Thread.sleep(1000);
         socket_t.close();
-        socket_t = new Socket("moxie.cs.oswego.edu", port);
+        socket_t = new Socket("moxie.cs.oswego.edu", port);*/
 
-        //Thread th = new Thread(connServ.task1);
-        //th.setDaemon(true);
-        //th.start();
+        Thread th = new Thread(connServ.task1);
+        th.setDaemon(true);
+        th.start();
+        connServ.task1.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent workerStateEvent) {
+                socket = connServ.task1.getValue();
+            }
+        });
 
     }
 
