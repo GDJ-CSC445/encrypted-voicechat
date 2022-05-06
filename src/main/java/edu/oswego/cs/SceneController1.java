@@ -52,8 +52,7 @@ public class SceneController1 {
         root.getChildrenUnmodifiable().stream().map(x->x.getId()).forEach(System.out::println);
         ListView lv = (ListView) root.getChildrenUnmodifiable().get(0);
 
-        ParticipantData participantData = new ParticipantData(ParticipantOpcode.LIST_SERVERS, 15551);
-        EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
+
         byte[] buffer = new byte[1024];
         EncryptedVoiceChat.socket.getInputStream().read(buffer);
         Packet packet = Packet.parse(buffer);
@@ -75,6 +74,8 @@ public class SceneController1 {
         stage.setScene(scene);
         stage.show();
     }
+
+
 
 
     /*    @Override
