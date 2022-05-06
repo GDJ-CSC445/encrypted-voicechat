@@ -24,17 +24,17 @@
          </font>
       </Button>
       <Button id="B" fx:id="createButton" layoutX="397.0" layoutY="340.0" mnemonicParsing="false"
-              onAction="#switchToActiveChat" prefHeight="39.0" prefWidth="103.0" text="Create">
+              onAction="#createServer" prefHeight="39.0" prefWidth="103.0" text="Create">
          <font>
             <Font size="18.0"/>
          </font>
       </Button>
-      <TextField fx:id="ServerNameTextFeild" layoutX="152.0" layoutY="152.0" prefHeight="25.0" prefWidth="250.0">
+      <TextField fx:id="ServerNameTextField" layoutX="152.0" layoutY="152.0" prefHeight="25.0" prefWidth="250.0">
          <rotationAxis>
             <Point3D/>
          </rotationAxis>
       </TextField>
-      <TextField fx:id="PasswordTextFeild" layoutX="248.0" layoutY="250.0" prefHeight="25.0" prefWidth="154.0">
+      <TextField fx:id="PasswordTextField" layoutX="248.0" layoutY="250.0" prefHeight="25.0" prefWidth="154.0">
          <rotationAxis>
             <Point3D/>
          </rotationAxis>
