@@ -10,6 +10,7 @@ import javafx.concurrent.Task;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -22,8 +23,8 @@ public class ServerConnection implements Runnable {
     public static boolean connected = false;
     public BooleanProperty connet = new SimpleBooleanProperty(this, "connected", false);
 
-    String connectionHost = "localhost";
-    int connectionPort = 15551 ;
+    static String connectionHost = "localhost";
+    static int connectionPort = 15555 ;
 
     public boolean isConnet() {
         return connet.get();
@@ -58,12 +59,12 @@ public class ServerConnection implements Runnable {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        Socket socket = new Socket("moxie.cs.oswego.edu", 15551);
+        Socket socket = new Socket(connectionHost, connectionPort);
         BufferedReader inport = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         int port = Integer.parseInt(inport.readLine());
         Thread.sleep(1000);
         socket.close();
-        socket = new Socket("moxie.cs.oswego.edu", port);
+        socket = new Socket(connectionHost, port);
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         InputStream in = socket.getInputStream();
 
@@ -89,8 +90,7 @@ public class ServerConnection implements Runnable {
                     }
                     if (packet instanceof ErrorPacket) {
                         ErrorPacket errorPacket = (ErrorPacket) packet;
-                        if (errorPacket.getErrorOpcode() == ErrorOpcode.CHATROOM_EXISTS)
-                            displayError(errorPacket.getErrorMsg());
+                        displayError(errorPacket.getErrorOpcode() + "; " + errorPacket.getErrorMsg());
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -109,7 +109,7 @@ public class ServerConnection implements Runnable {
             }
             if (userIn.contains("CREATE")) {
                 String[] params = userIn.split(" ");
-                ParticipantData participantData = new ParticipantData(ParticipantOpcode.CREATE_SERVER, port, new String[]{params[1]});
+                ParticipantData participantData = new ParticipantData(ParticipantOpcode.CREATE_SERVER, port, Arrays.copyOfRange(params, 1, params.length));
                 socket.getOutputStream().write(participantData.getBytes());
                 socket.getOutputStream().flush();
             } else if (userIn.contains("LIST")) {
@@ -120,6 +120,11 @@ public class ServerConnection implements Runnable {
             else if (userIn.contains("JOIN")) {
                 String serverName = userIn.split(" ")[1];
                 ParticipantData participantData = new ParticipantData(ParticipantOpcode.JOIN, port, new String[]{serverName});
+                socket.getOutputStream().write(participantData.getBytes());
+                socket.getOutputStream().flush();
+            }
+            else if (userIn.contains("LEAVE")) {
+                ParticipantData participantData = new ParticipantData(ParticipantOpcode.LEAVE, port);
                 socket.getOutputStream().write(participantData.getBytes());
                 socket.getOutputStream().flush();
             }
