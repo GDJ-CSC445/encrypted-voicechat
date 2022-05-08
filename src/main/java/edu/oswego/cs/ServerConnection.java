@@ -1,10 +1,8 @@
 package edu.oswego.cs;
 
+import edu.oswego.cs.network.opcodes.ErrorOpcode;
 import edu.oswego.cs.network.opcodes.ParticipantOpcode;
-import edu.oswego.cs.network.packets.DebugPacket;
-import edu.oswego.cs.network.packets.Packet;
-import edu.oswego.cs.network.packets.ParticipantACK;
-import edu.oswego.cs.network.packets.ParticipantData;
+import edu.oswego.cs.network.packets.*;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -23,6 +21,9 @@ public class ServerConnection implements Runnable {
     private static InputStream in;
     public static boolean connected = false;
     public BooleanProperty connet = new SimpleBooleanProperty(this, "connected", false);
+
+    String connectionHost = "localhost";
+    int connectionPort = 15551 ;
 
     public boolean isConnet() {
         return connet.get();
@@ -45,10 +46,15 @@ public class ServerConnection implements Runnable {
     }
 
     private static final String TEXT_GREEN = "\u001B[32m";
+    public static final String TEXT_RED = "\u001B[31m";
     private static final String TEXT_RESET = "\u001B[0m";
 
     public static void displayInfo(String msg) {
         System.out.println(TEXT_GREEN + "[INFO]" + TEXT_RESET + " " + msg);
+    }
+
+    public static void displayError(String error) {
+        System.out.println(TEXT_RED + "[ERROR]" + TEXT_RESET + " " + error);
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -81,7 +87,11 @@ public class ServerConnection implements Runnable {
                         DebugPacket debugPacket = (DebugPacket) packet;
                         displayInfo("Debug Message From PORT " + debugPacket.getPort() + "\t" + debugPacket.getMsg());
                     }
-                    buffer = new byte[]{};
+                    if (packet instanceof ErrorPacket) {
+                        ErrorPacket errorPacket = (ErrorPacket) packet;
+                        if (errorPacket.getErrorOpcode() == ErrorOpcode.CHATROOM_EXISTS)
+                            displayError(errorPacket.getErrorMsg());
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -24,6 +24,9 @@ public class EncryptedVoiceChat extends Application {
     static Socket socket_t;
     static int port;
 
+    String connectionHost = "localhost";
+    int connectionPort = 15551 ;
+
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
 
@@ -65,7 +68,7 @@ public class EncryptedVoiceChat extends Application {
             e.printStackTrace();
         }
 
-        socket_t = new Socket("moxie.cs.oswego.edu", 15551);
+        socket_t = new Socket(connectionHost, connectionPort);
         BufferedReader input = new BufferedReader(new InputStreamReader(socket_t.getInputStream()));
         int port = Integer.parseInt(input.readLine());
         Thread.sleep(1000);
