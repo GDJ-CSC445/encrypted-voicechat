@@ -1,5 +1,7 @@
 package edu.oswego.cs;
 
+import edu.oswego.cs.network.opcodes.ParticipantOpcode;
+import edu.oswego.cs.network.packets.ParticipantData;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -23,6 +25,7 @@ public class EncryptedVoiceChat extends Application {
     static Socket socket;
     static int port;
     static Boolean connectedToRoom;
+
 
 
     @Override
@@ -63,6 +66,22 @@ public class EncryptedVoiceChat extends Application {
 
         connServ.task.setOnSucceeded(workerStateEvent -> socket = connServ.task.getValue());
 
+    }
+
+    @Override
+    public void stop() {
+        System.out.println("Stage is closing");
+        //Close the connection between server and client.
+        try {
+            if (connectedToRoom) {
+                ParticipantData participantData1 = new ParticipantData(ParticipantOpcode.LEAVE, EncryptedVoiceChat.port);
+                EncryptedVoiceChat.socket.getOutputStream().write(participantData1.getBytes());
+                EncryptedVoiceChat.socket.getOutputStream().flush();
+            }
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
