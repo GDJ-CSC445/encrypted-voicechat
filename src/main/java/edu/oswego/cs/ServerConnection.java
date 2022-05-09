@@ -20,8 +20,8 @@ public class ServerConnection {
     public static boolean connected = false;
     public BooleanProperty connet = new SimpleBooleanProperty(this, "connected", false);
 
-    static String connectionHost = "localhost";
-    static int connectionPort = 15555;
+    static String connectionHost = "pi.cs.oswego.edu";
+    static int connectionPort = 26990;
 
     public boolean isConnet() {
         return connet.get();

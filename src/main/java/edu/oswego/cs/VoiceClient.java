@@ -10,7 +10,7 @@ public class VoiceClient {
     public static void main(String[] args) {      // this looks to be the client? like when ur actually in the server?
         Socket socket;
         String host = "localhost";
-        int port = 29600;
+        int port = 15555;
         BufferedOutputStream outStream;
 
         try {
