@@ -1,5 +1,6 @@
 package edu.oswego.cs;
 
+import edu.oswego.cs.network.opcodes.ErrorOpcode;
 import edu.oswego.cs.network.opcodes.ParticipantOpcode;
 import edu.oswego.cs.network.packets.ErrorPacket;
 import edu.oswego.cs.network.packets.Packet;
@@ -130,6 +131,11 @@ public class SceneController1 {
             System.out.println("OPCODE: " + packet.getOpcode() + "; ");
             if (packet instanceof ErrorPacket) {
                 System.out.println("Error: " + ((ErrorPacket) packet).getErrorOpcode());
+                if (((ErrorPacket) packet).getErrorOpcode() == ErrorOpcode.CHATROOM_FULL) {
+                    Label errorLabel = (Label) root.lookup("#errorDisplayLabel");
+                    errorLabel.setText("CHATROOM FULL");
+                }
+
             } else if (packet instanceof ParticipantACK) {
                 System.out.println("Params: " + Arrays.toString(((ParticipantACK) packet).getParams()));
             }
