@@ -20,6 +20,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -123,19 +124,33 @@ public class SceneController1 {
 
         byte[] buffer = new byte[1024];
 
-        EncryptedVoiceChat.socket.getInputStream().read(buffer);
-        Packet packet = Packet.parse(buffer);
-        if (packet instanceof ErrorPacket) {
-            ErrorPacket errorPacket = (ErrorPacket) packet;
-            ServerConnection.displayError(errorPacket.getErrorOpcode() + "; " + errorPacket.getErrorMsg());
-            VBox dialogVbox = new VBox(20);
-            dialogVbox.getChildren().add(new Text("This is a Dialog"));
-            Scene dialogScene = new Scene(dialogVbox, 300, 200);
+        new Thread( () -> {
+            try {
+                EncryptedVoiceChat.socket.getInputStream().read(buffer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Packet packet = Packet.parse(buffer);
+            System.out.println("OPCODE: " + packet.getOpcode() + "; ");
+            if (packet instanceof ErrorPacket) {
+                System.out.println("Error: " + ((ErrorPacket) packet).getErrorOpcode());
+            } else if (packet instanceof ParticipantACK) {
+                System.out.println("Params: " + Arrays.toString(((ParticipantACK) packet).getParams()));
+            }
+        } ).start();
 
-            stage.setScene(dialogScene);
-            stage.show();
-            return;
-        }
+
+//        if (packet instanceof ErrorPacket) {
+//            ErrorPacket errorPacket = (ErrorPacket) packet;
+//            ServerConnection.displayError(errorPacket.getErrorOpcode() + "; " + errorPacket.getErrorMsg());
+//            VBox dialogVbox = new VBox(20);
+//            dialogVbox.getChildren().add(new Text("This is a Dialog"));
+//            Scene dialogScene = new Scene(dialogVbox, 300, 200);
+//
+//            stage.setScene(dialogScene);
+//            stage.show();
+//            return;
+//        }
 
 
 
