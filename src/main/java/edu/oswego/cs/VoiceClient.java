@@ -1,39 +1,48 @@
 package edu.oswego.cs;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class VoiceClient {
 
-    public static void main(String[] args) {
-        Socket socket;
-        String host = "localhost";
-        int port = 29600;
-        BufferedOutputStream outStream;
+    AudioCapture audioCapture;
+    Socket socket;
+    String host = "127.0.0.1";
+    int port = 26900;
+    BufferedOutputStream outStream;
+    BufferedInputStream inStream;
 
+    public VoiceClient() {
         try {
-            AudioCapture audioCapture = new AudioCapture();
             socket = new Socket(host, port);
             outStream = new BufferedOutputStream(socket.getOutputStream());
-
-            //begin recording
-            audioCapture.start();
-
-            byte[] buf = new byte[1024];
-            int inBytes = audioCapture.dataLine.read(buf, 0, buf.length);
-            outStream.write(buf, 0, inBytes);
-
-            //commence recording
-            audioCapture.finish();
-
-
+            inStream = new BufferedInputStream(socket.getInputStream());
+            if (socket.isConnected()) {
+//                inStream = new BufferedInputStream(new FileInputStream(soundFile));
+//                play(inStream);
+            }
         } catch (UnknownHostException e) {
-            System.out.println("Unknown host.");
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+        private synchronized void play(final InputStream in) throws Exception {
+        AudioInputStream ain = AudioSystem.getAudioInputStream(in);
+        try (Clip clip = AudioSystem.getClip()) {
+            clip.open(ain);
+            clip.start();
+            Thread.sleep(100);
+            clip.drain();
+        }
+
     }
 }
