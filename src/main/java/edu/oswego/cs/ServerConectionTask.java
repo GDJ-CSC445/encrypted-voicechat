@@ -45,9 +45,14 @@ public class ServerConectionTask {
                     socket = new Socket("pi.cs.oswego.edu", port);
                     setConnect(true);
                 } catch (IOException | InterruptedException e) {
-                    ServerConnection.displayError("couldn't connect to "); //finish this task
-                }
+                    ServerConnection.displayError("Could not connect to " + EncryptedVoiceChat.connectionHost + " on port: " + EncryptedVoiceChat.connectionPort);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
 
+                }
             }
             return socket;
         }
