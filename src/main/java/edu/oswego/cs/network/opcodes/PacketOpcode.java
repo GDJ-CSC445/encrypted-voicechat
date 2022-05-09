@@ -4,7 +4,7 @@ public enum PacketOpcode {
 
     UNDEF(-1),
     PARTICIPANT(1),
-    END(2),
+    END(2), // what is end? should this be sent when closed?
     ERR(3),
     PARTICIPANT_ACK(4),
     SOUND(5),

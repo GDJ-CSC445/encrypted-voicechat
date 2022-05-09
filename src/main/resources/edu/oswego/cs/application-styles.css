@@ -7,6 +7,9 @@ VBox{
 #P {
      -fx-background-color:  linear-gradient(#090323, #4a2bae);
 }
+#Pane {
+     -fx-background-color:  linear-gradient(#090323, #4a2bae);
+}
 #LV{
      -fx-background-color:  #333333;
 }

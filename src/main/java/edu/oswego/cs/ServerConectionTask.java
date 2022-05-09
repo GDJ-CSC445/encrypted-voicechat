@@ -1,4 +1,3 @@
-/*
 package edu.oswego.cs;
 
 import javafx.beans.property.BooleanProperty;
@@ -12,33 +11,31 @@ import java.net.Socket;
 
 public class ServerConectionTask {
 
+    private static Socket socket;
+    public static boolean connected = false;
+    public BooleanProperty connect = new SimpleBooleanProperty(this, "connected", false);
 
-    */
-/*public boolean isConnet() {
-        return connet.get();
+    public boolean getConnect() {
+        return connect.get();
     }
 
-    public BooleanProperty connetProperty() {
-        return connet;
+    public BooleanProperty connectProperty() {
+        return connect;
     }
 
-    public void setConnet(boolean connet) {
-        this.connet.set(connet);
-    }*//*
+    public void setConnect(boolean connect) {
+        this.connect.set(connect);
+    }
 
 
     public Task<Socket> getTask() {
         return task;
     }
 
-    public void setTask(Task<Socket> task1) {
-        this.task = task;
-    }
-
     Task<Socket> task = new Task<Socket>() {
         @Override
         protected Socket call() throws Exception {
-            while(!connetProperty().get()){
+            while (!connectProperty().get()) {
                 try {
                     socket = new Socket("pi.cs.oswego.edu", 26990);
                     BufferedReader inport = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -46,7 +43,7 @@ public class ServerConectionTask {
                     Thread.sleep(1000);
                     socket.close();
                     socket = new Socket("pi.cs.oswego.edu", port);
-                    setConnet(true);
+                    setConnect(true);
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -56,4 +53,3 @@ public class ServerConectionTask {
         }
     };
 }
-*/

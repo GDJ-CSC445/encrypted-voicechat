@@ -1,9 +1,9 @@
 package edu.oswego.cs;
 
+import edu.oswego.cs.network.opcodes.ParticipantOpcode;
+import edu.oswego.cs.network.packets.ParticipantData;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,9 +21,12 @@ public class EncryptedVoiceChat extends Application {
     Stage window;
     Parent root;
     Scene scene;
+
     static Socket socket;
-    static Socket socket_t;
     static int port;
+    static Boolean connectedToRoom;
+
+
 
     String connectionHost = "localhost";
     int connectionPort = 15551 ;
@@ -34,25 +37,16 @@ public class EncryptedVoiceChat extends Application {
         window = stage;
         stage.setTitle("Main Menu");
 
-        ServerConnection connServ = new ServerConnection();
+        ServerConectionTask connServ = new ServerConectionTask();
 
-        connServ.connetProperty().addListener((v, oldValue, newValue) -> {
+        connServ.connectProperty().addListener((v, oldValue, newValue) -> {
             try {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
                 root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainMenu2.fxml")));
                 scene = new Scene(root);
                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("application-styles.css")).toExternalForm());
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        stage.setScene(scene);
-                        stage.show();
-                    }
+                Platform.runLater(() -> {
+                    stage.setScene(scene);
+                    stage.show();
                 });
             } catch (IOException e) {
                 e.printStackTrace();
@@ -69,24 +63,30 @@ public class EncryptedVoiceChat extends Application {
             e.printStackTrace();
         }
 
-        /*socket_t = new Socket("moxie.cs.oswego.edu", 15551);
 
-        BufferedReader input = new BufferedReader(new InputStreamReader(socket_t.getInputStream()));
-        int port = Integer.parseInt(input.readLine());
-        Thread.sleep(1000);
-        socket_t.close();
-        socket_t = new Socket("moxie.cs.oswego.edu", port);*/
 
         Thread th = new Thread(connServ.task1);
         th.setDaemon(true);
         th.start();
-        connServ.task1.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent workerStateEvent) {
-                socket = connServ.task1.getValue();
-            }
-        });
 
+        connServ.task.setOnSucceeded(workerStateEvent -> socket = connServ.task.getValue());
+
+    }
+
+    @Override
+    public void stop() {
+        System.out.println("Stage is closing");
+        //Close the connection between server and client.
+        try {
+            if (connectedToRoom) {
+                ParticipantData participantData1 = new ParticipantData(ParticipantOpcode.LEAVE, EncryptedVoiceChat.port);
+                EncryptedVoiceChat.socket.getOutputStream().write(participantData1.getBytes());
+                EncryptedVoiceChat.socket.getOutputStream().flush();
+            }
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
