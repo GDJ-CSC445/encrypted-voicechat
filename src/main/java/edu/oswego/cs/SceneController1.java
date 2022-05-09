@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -70,6 +71,9 @@ public class SceneController1 {
 
     @FXML
     public void switchToServerList(ActionEvent event) throws IOException {
+
+        final int serverNameLimit = 12;
+
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ListServer.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         ListView lv = (ListView) root.getChildrenUnmodifiable().get(0);
@@ -85,10 +89,14 @@ public class SceneController1 {
             ParticipantACK participantACK = (ParticipantACK) packet;
             for (String param : participantACK.getParams()) {
                 String name = param.split(";")[0];
+                for (int i = serverNameLimit - name.length(); i > 0; i--)
+                    name = name.concat("  ");
+                if (name.length() % 2 != 0) name = name.concat("  ");
                 String currentParticipants = param.split(";")[1].split("/")[0];
                 String maxParticipants = param.split(";")[1].split("/")[1];
                 HBox hbox = new HBox(new Label(name), new Label("(" + currentParticipants + "/" + maxParticipants + ")"));
-                hbox.setSpacing(300);
+                hbox.setAlignment(Pos.CENTER);
+                hbox.setSpacing(260);
                 lv.getItems().add(hbox);
                 EncryptedVoiceChat.chatrooms.add(param);
             }
@@ -106,8 +114,10 @@ public class SceneController1 {
 
     @FXML
     public void listViewOnChange(Event event) {
-       ListView<String> lv = (ListView<String>) event.getSource();
-       EncryptedVoiceChat.selectedRoom = lv.getSelectionModel().getSelectedItem();
+       ListView<HBox> lv = (ListView<HBox>) event.getSource();
+       HBox hbox = lv.getSelectionModel().getSelectedItem();
+       EncryptedVoiceChat.selectedRoom = ((Label) hbox.getChildrenUnmodifiable().get(0)).getText();
+        System.out.println(EncryptedVoiceChat.selectedRoom);
     }
 
     @FXML
