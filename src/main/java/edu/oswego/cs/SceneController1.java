@@ -84,7 +84,12 @@ public class SceneController1 {
         if (packet instanceof ParticipantACK) {
             ParticipantACK participantACK = (ParticipantACK) packet;
             for (String param : participantACK.getParams()) {
-                lv.getItems().add(param);
+                String name = param.split(";")[0];
+                String currentParticipants = param.split(";")[1].split("/")[0];
+                String maxParticipants = param.split(";")[1].split("/")[1];
+                HBox hbox = new HBox(new Label(name), new Label("(" + currentParticipants + "/" + maxParticipants + ")"));
+                hbox.setSpacing(300);
+                lv.getItems().add(hbox);
                 EncryptedVoiceChat.chatrooms.add(param);
             }
         } else if (packet instanceof ErrorPacket) {
