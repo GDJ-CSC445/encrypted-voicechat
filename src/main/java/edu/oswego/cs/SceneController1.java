@@ -1,6 +1,5 @@
 package edu.oswego.cs;
 
-import edu.oswego.cs.network.opcodes.ErrorOpcode;
 import edu.oswego.cs.network.opcodes.ParticipantOpcode;
 import edu.oswego.cs.network.packets.ErrorPacket;
 import edu.oswego.cs.network.packets.Packet;
@@ -52,13 +51,17 @@ public class SceneController1 {
             ParticipantData participantData1 = new ParticipantData(ParticipantOpcode.LEAVE, EncryptedVoiceChat.port);
             EncryptedVoiceChat.socket.getOutputStream().write(participantData1.getBytes());
             EncryptedVoiceChat.socket.getOutputStream().flush();
+
+            EncryptedVoiceChat.connectedToRoom = false;
+
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainMenu2.fxml")));
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
         }
 
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainMenu2.fxml")));
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+
     }
 
     @FXML
@@ -105,6 +108,8 @@ public class SceneController1 {
             ErrorPacket errorPacket = (ErrorPacket) packet;
             ServerConnection.displayError(errorPacket.getErrorOpcode() + "; " + errorPacket.getErrorMsg());
         }
+
+
         HBox hBox = new HBox(root);
         scene = new Scene(hBox);
         stage.setScene(scene);
@@ -134,25 +139,23 @@ public class SceneController1 {
 
         byte[] buffer = new byte[1024];
 
-        new Thread( () -> {
-            try {
-                EncryptedVoiceChat.socket.getInputStream().read(buffer);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Packet packet = Packet.parse(buffer);
-            System.out.println("OPCODE: " + packet.getOpcode() + "; ");
-            if (packet instanceof ErrorPacket) {
-                System.out.println("Error: " + ((ErrorPacket) packet).getErrorOpcode());
-                if (((ErrorPacket) packet).getErrorOpcode() == ErrorOpcode.CHATROOM_FULL) {
-                    Label errorLabel = (Label) root.lookup("#errorDisplayLabel");
-                    errorLabel.setText("CHATROOM FULL");
-                }
-
-            } else if (packet instanceof ParticipantACK) {
-                System.out.println("Params: " + Arrays.toString(((ParticipantACK) packet).getParams()));
-            }
-        }).start();
+        try {
+            EncryptedVoiceChat.socket.getInputStream().read(buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Packet packet = Packet.parse(buffer);
+        System.out.println("OPCODE: " + packet.getOpcode() + "; ");
+        if (packet instanceof ErrorPacket) {
+            System.out.println("Error: " + ((ErrorPacket) packet).getErrorOpcode());
+        } else if (packet instanceof ParticipantACK) {
+            EncryptedVoiceChat.connectedToRoom = true;
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
 
 
     }
@@ -170,42 +173,27 @@ public class SceneController1 {
 //        }
 
 
-    /*    root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }*/
+
 
     @FXML
     public void createServer(ActionEvent event) throws IOException {
         String serverName = ServerNameTextField.getText();
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("CreateServer.fxml")));
+        String numberOfParticipants = String.valueOf(NumberOfParticipants.getValue());
+        ParticipantData participantData = new ParticipantData(ParticipantOpcode.CREATE_SERVER, EncryptedVoiceChat.port, new String[]{serverName, numberOfParticipants});
+        EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
+
+        participantData = new ParticipantData(ParticipantOpcode.JOIN, EncryptedVoiceChat.port, new String[]{serverName});
+        EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
+        EncryptedVoiceChat.connectedToRoom = true;
+
+        // error check
+
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
 
-        if (serverName.length() > 12) {
-            Label errorLabel = (Label) root.lookup("#errorLabel");
-            errorLabel.setText("Error: Chat room > 12 char");
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } else {
-            String numberOfParticipants = String.valueOf(NumberOfParticipants.getValue());
-            ParticipantData participantData = new ParticipantData(ParticipantOpcode.CREATE_SERVER, EncryptedVoiceChat.port, new String[]{serverName, numberOfParticipants});
-            EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
-
-            participantData = new ParticipantData(ParticipantOpcode.JOIN, EncryptedVoiceChat.port, new String[]{serverName});
-            EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
-            EncryptedVoiceChat.connectedToRoom = true;
-
-            // error check
-
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        }
         //update stage when we get new person to join room
 
 
