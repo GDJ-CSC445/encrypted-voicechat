@@ -51,13 +51,17 @@ public class SceneController1 {
             ParticipantData participantData1 = new ParticipantData(ParticipantOpcode.LEAVE, EncryptedVoiceChat.port);
             EncryptedVoiceChat.socket.getOutputStream().write(participantData1.getBytes());
             EncryptedVoiceChat.socket.getOutputStream().flush();
+
+            EncryptedVoiceChat.connectedToRoom = false;
+
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainMenu2.fxml")));
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
         }
 
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainMenu2.fxml")));
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+
     }
 
     @FXML
@@ -135,20 +139,23 @@ public class SceneController1 {
 
         byte[] buffer = new byte[1024];
 
-        new Thread( () -> {
-            try {
-                EncryptedVoiceChat.socket.getInputStream().read(buffer);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Packet packet = Packet.parse(buffer);
-            System.out.println("OPCODE: " + packet.getOpcode() + "; ");
-            if (packet instanceof ErrorPacket) {
-                System.out.println("Error: " + ((ErrorPacket) packet).getErrorOpcode());
-            } else if (packet instanceof ParticipantACK) {
-                System.out.println("Params: " + Arrays.toString(((ParticipantACK) packet).getParams()));
-            }
-        }).start();
+        try {
+            EncryptedVoiceChat.socket.getInputStream().read(buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Packet packet = Packet.parse(buffer);
+        System.out.println("OPCODE: " + packet.getOpcode() + "; ");
+        if (packet instanceof ErrorPacket) {
+            System.out.println("Error: " + ((ErrorPacket) packet).getErrorOpcode());
+        } else if (packet instanceof ParticipantACK) {
+            EncryptedVoiceChat.connectedToRoom = true;
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
 
 
     }
@@ -166,12 +173,7 @@ public class SceneController1 {
 //        }
 
 
-    /*    root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }*/
+
 
     @FXML
     public void createServer(ActionEvent event) throws IOException {
