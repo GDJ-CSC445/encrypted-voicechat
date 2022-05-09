@@ -9,10 +9,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 ;
 
@@ -21,32 +23,41 @@ public class EncryptedVoiceChat extends Application {
     Stage window;
     Parent root;
     Scene scene;
-
     static Socket socket;
     static int port;
-    static Boolean connectedToRoom;
+    static boolean connectedToRoom;
+    static String selectedRoom = "";
 
+    String connectionHost = "pi.cs.oswego.edu";
+    int connectionPort = 26990 ;
 
-
-    String connectionHost = "localhost";
-    int connectionPort = 15551 ;
+    static ArrayList<String> chatrooms = new ArrayList<>();
 
     @Override
-    public void start(Stage stage) throws IOException, InterruptedException, ExecutionException {
+    public void start(Stage stage) throws IOException, InterruptedException {
 
         window = stage;
         stage.setTitle("Main Menu");
 
-        ServerConectionTask connServ = new ServerConectionTask();
+        ServerConnection connServ = new ServerConnection();
 
-        connServ.connectProperty().addListener((v, oldValue, newValue) -> {
+        connServ.connetProperty().addListener((v, oldValue, newValue) -> {
             try {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainMenu2.fxml")));
                 scene = new Scene(root);
                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("application-styles.css")).toExternalForm());
-                Platform.runLater(() -> {
-                    stage.setScene(scene);
-                    stage.show();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        stage.setScene(scene);
+                        stage.show();
+                    }
                 });
             } catch (IOException e) {
                 e.printStackTrace();
@@ -63,11 +74,30 @@ public class EncryptedVoiceChat extends Application {
             e.printStackTrace();
         }
 
-        Thread th = new Thread(connServ.task);
-        th.setDaemon(true);
-        th.start();
+        new Thread( () -> {
+            while (true) {
 
-        connServ.task.setOnSucceeded(workerStateEvent -> socket = connServ.task.getValue());
+            try {
+                socket = new Socket(connectionHost, connectionPort);
+                BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                int port = Integer.parseInt(input.readLine());
+                Thread.sleep(1000);
+                socket.close();
+                socket = new Socket(connectionHost, port);
+                break;
+            } catch (IOException | InterruptedException e) {
+                ServerConnection.displayError("Could not connect to " + connectionHost + " on port: " + connectionPort);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }}).start();
+
+        //Thread th = new Thread(connServ.task1);
+        //th.setDaemon(true);
+        //th.start();
 
     }
 
@@ -86,6 +116,7 @@ public class EncryptedVoiceChat extends Application {
             e.printStackTrace();
         }
     }
+
 
     public static void main(String[] args) {
         launch(args);
