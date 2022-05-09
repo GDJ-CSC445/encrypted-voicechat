@@ -10,12 +10,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 
 public class EncryptedVoiceChat extends Application {
@@ -40,9 +39,9 @@ public class EncryptedVoiceChat extends Application {
         window = stage;
         stage.setTitle("Main Menu");
 
-        ServerConnection connServ = new ServerConnection();
+        ServerConnectionTask connServ = new ServerConnectionTask();
 
-        connServ.connetProperty().addListener((v, oldValue, newValue) -> {
+        connServ.connectProperty().addListener((v, oldValue, newValue) -> {
             try {
                 try {
                     Thread.sleep(2000);
@@ -77,30 +76,17 @@ public class EncryptedVoiceChat extends Application {
             e.printStackTrace();
         }
 
-        new Thread( () -> {
-            while (true) {
+        Thread th = new Thread(connServ.task);
+        th.setDaemon(true);
+        th.start();
 
+        connServ.task.setOnSucceeded(event -> {
             try {
-                socket = new Socket(connectionHost, connectionPort);
-                BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                int port = Integer.parseInt(input.readLine());
-                Thread.sleep(1000);
-                socket.close();
-                socket = new Socket(connectionHost, port);
-                break;
-            } catch (IOException | InterruptedException e) {
-                ServerConnection.displayError("Could not connect to " + connectionHost + " on port: " + connectionPort);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
+                socket = connServ.getTask().get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
-        }}).start();
-
-        //Thread th = new Thread(connServ.task1);
-        //th.setDaemon(true);
-        //th.start();
+        });
 
     }
 
