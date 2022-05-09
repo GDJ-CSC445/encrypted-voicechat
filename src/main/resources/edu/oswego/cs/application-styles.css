@@ -4,9 +4,16 @@ VBox{
 #B{
     -fx-background-color:  linear-gradient(#ffaa49, #ffcf79);
 }
-#P {
+#B{
+    -fx-background-color:  linear-gradient(#ffaa49, #ffcf79);
+}
+#B{
+    -fx-background-color:  linear-gradient(#ffaa49, #ffcf79);
+}
+#P{
      -fx-background-color:  linear-gradient(#090323, #4a2bae);
 }
+
 #Pane {
      -fx-background-color:  linear-gradient(#090323, #4a2bae);
 }

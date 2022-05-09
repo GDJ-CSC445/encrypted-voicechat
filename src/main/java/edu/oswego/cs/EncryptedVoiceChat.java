@@ -63,9 +63,7 @@ public class EncryptedVoiceChat extends Application {
             e.printStackTrace();
         }
 
-
-
-        Thread th = new Thread(connServ.task1);
+        Thread th = new Thread(connServ.task);
         th.setDaemon(true);
         th.start();
 

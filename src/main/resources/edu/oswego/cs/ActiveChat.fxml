@@ -12,15 +12,21 @@
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#b7d7f5" height="136.0" layoutX="20.0" layoutY="60.0"
                  opacity="0.5" stroke="#b7d7f5" strokeDashOffset="-1.0" strokeLineCap="ROUND" strokeLineJoin="ROUND"
                  strokeWidth="5.0" width="360.0"/>
-      <Button id="B" fx:id="LeaveButton" layoutX="161.0" layoutY="206.0" mnemonicParsing="false" onAction="#LeaveRoom"
+      <Button id="B" fx:id="LeaveButton" layoutX="67.0" layoutY="206.0" mnemonicParsing="false" onAction="#LeaveRoom"
               text="Leave" textAlignment="CENTER">
+         <font>
+            <Font size="20.0"/>
+         </font>
+      </Button>
+      <Button id="B" layoutX="253.0" layoutY="206.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="78.0"
+              text="Talk">
          <font>
             <Font size="20.0"/>
          </font>
       </Button>
       <Label layoutX="130.0" layoutY="21.0" prefHeight="17.0" prefWidth="139.0" text="Connected to &quot;Cleaning&quot;"
              textFill="#0f9413"/>
-      <Rectangle id="Rec" arcHeight="5.0" arcWidth="5.0" fill="#b7d7f5" height="37.0" layoutX="110.0" layoutY="11.0"
+      <Rectangle id="Rec" arcHeight="5.0" arcWidth="5.0" fill="#b7d7f5" height="37.0" layoutX="109.0" layoutY="11.0"
                  opacity="0.5" stroke="#b7d7f5" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="5.0"
                  width="180.0"/>
    </children>

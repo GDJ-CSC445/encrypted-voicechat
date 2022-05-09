@@ -109,7 +109,6 @@ public class SceneController1 {
         String serverName = ServerNameTextField.getText();
         ParticipantData participantData = new ParticipantData(ParticipantOpcode.CREATE_SERVER, EncryptedVoiceChat.port, new String[]{serverName});
         EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
-
         ParticipantData participantData1 = new ParticipantData(ParticipantOpcode.JOIN, EncryptedVoiceChat.port, new String[]{serverName});
         EncryptedVoiceChat.socket.getOutputStream().write(participantData1.getBytes());
         EncryptedVoiceChat.socket.getOutputStream().flush();
