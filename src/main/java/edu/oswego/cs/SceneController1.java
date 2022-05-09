@@ -105,8 +105,6 @@ public class SceneController1 {
             ErrorPacket errorPacket = (ErrorPacket) packet;
             ServerConnection.displayError(errorPacket.getErrorOpcode() + "; " + errorPacket.getErrorMsg());
         }
-
-
         HBox hBox = new HBox(root);
         scene = new Scene(hBox);
         stage.setScene(scene);
@@ -182,22 +180,32 @@ public class SceneController1 {
     @FXML
     public void createServer(ActionEvent event) throws IOException {
         String serverName = ServerNameTextField.getText();
-        String numberOfParticipants = String.valueOf(NumberOfParticipants.getValue());
-        ParticipantData participantData = new ParticipantData(ParticipantOpcode.CREATE_SERVER, EncryptedVoiceChat.port, new String[]{serverName, numberOfParticipants});
-        EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
-
-        participantData = new ParticipantData(ParticipantOpcode.JOIN, EncryptedVoiceChat.port, new String[]{serverName});
-        EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
-        EncryptedVoiceChat.connectedToRoom = true;
-
-        // error check
-
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("CreateServer.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
 
+        if (serverName.length() > 12) {
+            Label errorLabel = (Label) root.lookup("#errorLabel");
+            errorLabel.setText("Error: Chat room > 12 char");
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } else {
+            String numberOfParticipants = String.valueOf(NumberOfParticipants.getValue());
+            ParticipantData participantData = new ParticipantData(ParticipantOpcode.CREATE_SERVER, EncryptedVoiceChat.port, new String[]{serverName, numberOfParticipants});
+            EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
+
+            participantData = new ParticipantData(ParticipantOpcode.JOIN, EncryptedVoiceChat.port, new String[]{serverName});
+            EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
+            EncryptedVoiceChat.connectedToRoom = true;
+
+            // error check
+
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
         //update stage when we get new person to join room
 
 
