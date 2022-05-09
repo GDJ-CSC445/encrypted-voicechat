@@ -4,10 +4,13 @@ VBox{
 #B{
     -fx-background-color:  linear-gradient(#ffaa49, #ffcf79);
 }
-#B{
+#joinServerButton{
     -fx-background-color:  linear-gradient(#ffaa49, #ffcf79);
 }
-#B{
+#RefreshButton{
+    -fx-background-color:  linear-gradient(#ffaa49, #ffcf79);
+}
+#BackButton{
     -fx-background-color:  linear-gradient(#ffaa49, #ffcf79);
 }
 #P{

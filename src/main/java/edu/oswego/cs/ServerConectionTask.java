@@ -37,7 +37,7 @@ public class ServerConectionTask {
         protected Socket call() throws Exception {
             while (!connectProperty().get()) {
                 try {
-                    socket = new Socket("pi.cs.oswego.edu", 26990);
+                    socket = new Socket(EncryptedVoiceChat.connectionHost, EncryptedVoiceChat.connectionPort);
                     BufferedReader inport = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     int port = Integer.parseInt(inport.readLine());
                     Thread.sleep(1000);
@@ -45,7 +45,7 @@ public class ServerConectionTask {
                     socket = new Socket("pi.cs.oswego.edu", port);
                     setConnect(true);
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    ServerConnection.displayError("couldn't connect to "); //finish this task
                 }
 
             }

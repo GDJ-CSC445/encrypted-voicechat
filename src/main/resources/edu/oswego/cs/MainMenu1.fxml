@@ -13,7 +13,7 @@
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oswego.cs.SceneController1">
    <children>
       <Label fx:id="connectedToLabel" alignment="BASELINE_LEFT" layoutX="236.0" layoutY="14.0" prefHeight="32.0"
-             prefWidth="210.0" text="Connected to Moxie.cs.oswego.edu" textAlignment="CENTER" textFill="#bbbbbb">
+             prefWidth="210.0" text="Connected to ???" textAlignment="CENTER" textFill="#bbbbbb">
          <opaqueInsets>
             <Insets/>
          </opaqueInsets>

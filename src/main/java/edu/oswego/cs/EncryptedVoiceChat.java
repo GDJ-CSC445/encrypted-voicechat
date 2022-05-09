@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
@@ -15,8 +16,6 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Objects;
-
-;
 
 
 public class EncryptedVoiceChat extends Application {
@@ -28,8 +27,10 @@ public class EncryptedVoiceChat extends Application {
     static boolean connectedToRoom;
     static String selectedRoom = "";
 
-    String connectionHost = "pi.cs.oswego.edu";
-    int connectionPort = 26990 ;
+    Label connectedToLabel;
+
+    static String connectionHost = "pi.cs.oswego.edu";
+    static int connectionPort = 26990;
 
     static ArrayList<String> chatrooms = new ArrayList<>();
 
@@ -55,6 +56,8 @@ public class EncryptedVoiceChat extends Application {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        connectedToLabel = (Label) root.lookup("#connectedToLabel");
+                        connectedToLabel.setText("Connected to " + connectionHost);
                         stage.setScene(scene);
                         stage.show();
                     }
