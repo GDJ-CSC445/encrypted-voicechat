@@ -14,13 +14,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 public class SceneController1 {
@@ -110,19 +107,15 @@ public class SceneController1 {
 
     @FXML
     public void switchToActiveChat(ActionEvent event) throws IOException {
+
+        if (EncryptedVoiceChat.selectedRoom == null || EncryptedVoiceChat.selectedRoom.equals("")) return;
+
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ListServer.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
         //root.getChildrenUnmodifiable().get(0).addEventHandler();
         // figure out how to see what is selected in HBox soo that you can pick that item to be sent in packet.
-
-        ListView lv = (ListView) root.getChildrenUnmodifiable().get(0);
-
-        System.out.println(lv.getItems().size());
-
-        String selectedItem = (String) lv.getSelectionModel().getSelectedItem();
-        System.out.println("GREG: " + selectedItem);
-        ParticipantData participantData = new ParticipantData(ParticipantOpcode.JOIN, EncryptedVoiceChat.port, new String[]{selectedItem});
+        ParticipantData participantData = new ParticipantData(ParticipantOpcode.JOIN, EncryptedVoiceChat.port, new String[]{EncryptedVoiceChat.selectedRoom});
         EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
 
         byte[] buffer = new byte[1024];
@@ -140,8 +133,10 @@ public class SceneController1 {
             } else if (packet instanceof ParticipantACK) {
                 System.out.println("Params: " + Arrays.toString(((ParticipantACK) packet).getParams()));
             }
-        } ).start();
+        }).start();
 
+
+    }
 
 //        if (packet instanceof ErrorPacket) {
 //            ErrorPacket errorPacket = (ErrorPacket) packet;
@@ -156,12 +151,12 @@ public class SceneController1 {
 //        }
 
 
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
+    /*    root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-    }
+    }*/
 
     @FXML
     public void createServer(ActionEvent event) throws IOException {
