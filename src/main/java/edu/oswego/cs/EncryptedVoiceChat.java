@@ -28,6 +28,9 @@ public class EncryptedVoiceChat extends Application {
 
 
 
+    String connectionHost = "localhost";
+    int connectionPort = 15551 ;
+
     @Override
     public void start(Stage stage) throws IOException, InterruptedException, ExecutionException {
 
@@ -60,7 +63,9 @@ public class EncryptedVoiceChat extends Application {
             e.printStackTrace();
         }
 
-        Thread th = new Thread(connServ.task);
+
+
+        Thread th = new Thread(connServ.task1);
         th.setDaemon(true);
         th.start();
 
