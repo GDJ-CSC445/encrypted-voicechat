@@ -1,5 +1,6 @@
 package edu.oswego.cs.network.packets;
 
+import edu.oswego.cs.network.opcodes.ErrorOpcode;
 import edu.oswego.cs.network.opcodes.PacketOpcode;
 import edu.oswego.cs.network.opcodes.ParticipantOpcode;
 
@@ -26,7 +27,7 @@ public abstract class Packet {
             case SOUND: return PacketFactory.parseSoundDataPacket(bytes);
             case PARTICIPANT: return PacketFactory.parseParticipantDataPacket(bytes);
             case END: return PacketFactory.parseEndPacket(bytes);
-            case ERR: ;
+            case ERR: return PacketFactory.parseErrorPacket(bytes);
             case PARTICIPANT_ACK: return PacketFactory.parseParticipantACKPacket(bytes);
             case DEBUG: return PacketFactory.parseDebugPacket(bytes);
             default: ;
@@ -99,6 +100,15 @@ public abstract class Packet {
             int port = new BigInteger( new byte[]{bytes[2], bytes[3]} ).intValue();
 
             return new EndPacket(port);
+        }
+
+        public static ErrorPacket parseErrorPacket(byte[] bytes) {
+            ErrorOpcode errorOpcode = ErrorOpcode.getOpcode(new BigInteger(new byte[]{bytes[2], bytes[3]}).intValue()) ;
+            if (bytes.length > 4) {
+                String errorMsg = new String(Arrays.copyOfRange(bytes, 4, bytes.length));
+                return new ErrorPacket(errorOpcode, errorMsg);
+            }
+            return new ErrorPacket(errorOpcode);
         }
 
         private static String[] parseParam(byte[] subArray) {
