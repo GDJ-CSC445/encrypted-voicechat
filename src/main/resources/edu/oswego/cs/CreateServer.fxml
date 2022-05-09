@@ -34,11 +34,6 @@
             <Point3D/>
          </rotationAxis>
       </TextField>
-      <TextField fx:id="PasswordTextField" layoutX="248.0" layoutY="250.0" prefHeight="25.0" prefWidth="154.0">
-         <rotationAxis>
-            <Point3D/>
-         </rotationAxis>
-      </TextField>
       <Label fx:id="ServerName" layoutX="32.0" layoutY="149.0" text="Server Name:" textFill="WHITE">
          <font>
             <Font size="20.0"/>
@@ -50,12 +45,6 @@
             <Font size="20.0"/>
          </font>
       </Label>
-      <Label fx:id="Password" layoutX="150.0" layoutY="248.0" text="Password?" textFill="WHITE">
-         <font>
-            <Font size="20.0"/>
-         </font>
-      </Label>
-      <RadioButton fx:id="PasswordRadioButton" layoutX="128.0" layoutY="254.0" mnemonicParsing="false"/>
       <Spinner fx:id="NumberOfParticipants" accessibleText="1&#10;2&#10;3&#10;4&#10;" editable="true" layoutX="251.0"
                layoutY="202.0"/>
    </children>

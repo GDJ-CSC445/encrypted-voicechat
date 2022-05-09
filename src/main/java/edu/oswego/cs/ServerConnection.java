@@ -1,17 +1,9 @@
 package edu.oswego.cs;
 
-import edu.oswego.cs.network.opcodes.ErrorOpcode;
 import edu.oswego.cs.network.opcodes.ParticipantOpcode;
 import edu.oswego.cs.network.packets.*;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.concurrent.Task;
-import edu.oswego.cs.network.packets.DebugPacket;
-import edu.oswego.cs.network.packets.Packet;
-import edu.oswego.cs.network.packets.ParticipantACK;
-import edu.oswego.cs.network.packets.ParticipantData;
-
 
 import java.io.*;
 import java.net.Socket;
@@ -19,7 +11,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 
-public class ServerConnection implements Runnable {
+public class ServerConnection {
     private static Socket socket;
     Socket finalSocket;
     private static int port;
@@ -29,7 +21,7 @@ public class ServerConnection implements Runnable {
     public BooleanProperty connet = new SimpleBooleanProperty(this, "connected", false);
 
     static String connectionHost = "localhost";
-    static int connectionPort = 15555 ;
+    static int connectionPort = 15555;
 
     public boolean isConnet() {
         return connet.get();
