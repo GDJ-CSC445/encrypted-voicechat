@@ -98,9 +98,14 @@ public class SceneController1 {
                 if (name.length() % 2 != 0) name = name.concat("  ");
                 String currentParticipants = param.split(";")[1].split("/")[0];
                 String maxParticipants = param.split(";")[1].split("/")[1];
-                HBox hbox = new HBox(new Label(name), new Label("(" + currentParticipants + "/" + maxParticipants + ")"));
+                Label serverNameLabel = new Label(name);
+                serverNameLabel.setAlignment(Pos.CENTER_LEFT);
+                Label participantsLabel = new Label("(" + currentParticipants + "/" + maxParticipants + ")");
+                participantsLabel.setAlignment(Pos.CENTER_RIGHT);
+                HBox hbox = new HBox(serverNameLabel, participantsLabel);
+                hbox.setSpacing(150);
                 hbox.setAlignment(Pos.CENTER);
-                hbox.setSpacing(260);
+//                hbox.setSpacing(180);
                 lv.getItems().add(hbox);
                 EncryptedVoiceChat.chatrooms.add(param);
             }

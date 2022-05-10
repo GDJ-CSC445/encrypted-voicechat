@@ -8,7 +8,9 @@ public enum PacketOpcode {
     ERR(3),
     PARTICIPANT_ACK(4),
     SOUND(5),
-    DEBUG(6);
+    DEBUG(6),
+    SRQ(7),
+    SACK(8);
 
     private final int opcodeInt;
 
@@ -29,6 +31,8 @@ public enum PacketOpcode {
             case  4: return PARTICIPANT_ACK;
             case  5: return SOUND;
             case  6: return DEBUG;
+            case  7: return SRQ;
+            case  8: return SACK;
             default: return UNDEF;
         }
     }

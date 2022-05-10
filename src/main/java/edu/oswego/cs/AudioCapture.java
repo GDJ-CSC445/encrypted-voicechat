@@ -79,29 +79,29 @@ public class AudioCapture {
         System.out.println("Record complete");
     }
 
-    public void sendWavOverTCP(Socket socket) throws IOException {
-        byte[] wavBytes = Files.readAllBytes(Path.of(fileName));
-        final int dataLimit = (wavBytes.length/8) + 1;
-        int seqNumber = 0;
-        while (wavBytes.length > 0) {
-            if (wavBytes.length >= dataLimit) {
-                System.out.println(wavBytes.length);
-                byte[] tempBytes = Arrays.copyOfRange(wavBytes, 0, dataLimit + 1);
-                wavBytes = Arrays.copyOfRange(wavBytes, dataLimit + 1, wavBytes.length);
-                SoundData soundData = new SoundData(socket.getPort(), tempBytes, seqNumber);
-//                System.out.println(Arrays.toString(soundData.getBytes()));
-                socket.getOutputStream().write(soundData.getBytes());
-//                Thread.sleep(500);
-            } else {
-                SoundData soundData = new SoundData(socket.getPort(), wavBytes, seqNumber);
-//                System.out.println(Arrays.toString(soundData.getBytes()));
-                socket.getOutputStream().write(soundData.getBytes());
-//                Thread.sleep(750);
-                wavBytes = new byte[]{};
-            }
-            seqNumber++;
-        }
-        socket.getOutputStream().write(new EndPacket(socket.getPort()).getBytes());
-        System.out.println("sent end packet");
-    }
+//    public void sendWavOverTCP(Socket socket) throws IOException {
+//        byte[] wavBytes = Files.readAllBytes(Path.of(fileName));
+//        final int dataLimit = (wavBytes.length/8) + 1;
+//        int seqNumber = 0;
+//        while (wavBytes.length > 0) {
+//            if (wavBytes.length >= dataLimit) {
+//                System.out.println(wavBytes.length);
+//                byte[] tempBytes = Arrays.copyOfRange(wavBytes, 0, dataLimit + 1);
+//                wavBytes = Arrays.copyOfRange(wavBytes, dataLimit + 1, wavBytes.length);
+//                SoundData soundData = new SoundData(socket.getPort(), tempBytes, seqNumber);
+////                System.out.println(Arrays.toString(soundData.getBytes()));
+//                socket.getOutputStream().write(soundData.getBytes());
+////                Thread.sleep(500);
+//            } else {
+//                SoundData soundData = new SoundData(socket.getPort(), wavBytes, seqNumber);
+////                System.out.println(Arrays.toString(soundData.getBytes()));
+//                socket.getOutputStream().write(soundData.getBytes());
+////                Thread.sleep(750);
+//                wavBytes = new byte[]{};
+//            }
+//            seqNumber++;
+//        }
+//        socket.getOutputStream().write(new EndPacket(socket.getPort()).getBytes());
+//        System.out.println("sent end packet");
+//    }
 }
