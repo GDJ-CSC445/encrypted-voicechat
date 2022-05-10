@@ -19,14 +19,14 @@ public class VoiceClient {
             outStream = new BufferedOutputStream(socket.getOutputStream());
 
             //begin recording
-            audioCapture.start();
+//            audioCapture.start();
 
             byte[] buf = new byte[1024];
             int inBytes = audioCapture.dataLine.read(buf, 0, buf.length);
             outStream.write(buf, 0, inBytes);
 
             //commence recording
-            audioCapture.finish();
+//            audioCapture.finish();
 
 
         } catch (UnknownHostException e) {
