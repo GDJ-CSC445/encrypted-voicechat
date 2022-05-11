@@ -42,7 +42,7 @@ public class ServerConnectionTask {
                     int port = Integer.parseInt(inport.readLine());
                     Thread.sleep(1000);
                     socket.close();
-                    socket = new Socket("pi.cs.oswego.edu", port);
+                    socket = new Socket(EncryptedVoiceChat.connectionHost, port);
                     setConnect(true);
                 } catch (IOException | InterruptedException e) {
                     ServerConnection.displayError("Could not connect to " + EncryptedVoiceChat.connectionHost + " on port: " + EncryptedVoiceChat.connectionPort);
