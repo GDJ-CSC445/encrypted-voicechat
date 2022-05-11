@@ -10,10 +10,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 
@@ -23,13 +24,13 @@ public class EncryptedVoiceChat extends Application {
     Scene scene;
     static Socket socket;
     static int port;
-    static boolean connectedToRoom;
+    static volatile boolean connectedToRoom;
     static String selectedRoom = "";
 
     Label connectedToLabel;
 
-    static String connectionHost = "pi.cs.oswego.edu";
-    static int connectionPort = 26990;
+    static String connectionHost = "moxie.cs.oswego.edu";
+    static int connectionPort = 15551;
 
     static ArrayList<String> chatrooms = new ArrayList<>();
 
@@ -106,6 +107,15 @@ public class EncryptedVoiceChat extends Application {
         }
     }
 
+    public List<String> getHosts() throws FileNotFoundException {
+        ArrayList<String> hosts = new ArrayList<>();
+        Scanner scanner = new Scanner(new File("hosts.txt"));
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            hosts.add(line);
+        }
+        return hosts;
+    }
 
     public static void main(String[] args) {
         launch(args);

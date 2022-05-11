@@ -1,10 +1,8 @@
 package edu.oswego.cs;
 
+import edu.oswego.cs.network.opcodes.PacketOpcode;
 import edu.oswego.cs.network.opcodes.ParticipantOpcode;
-import edu.oswego.cs.network.packets.ErrorPacket;
-import edu.oswego.cs.network.packets.Packet;
-import edu.oswego.cs.network.packets.ParticipantACK;
-import edu.oswego.cs.network.packets.ParticipantData;
+import edu.oswego.cs.network.packets.*;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -17,7 +15,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import javax.sound.sampled.*;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -36,6 +35,11 @@ public class SceneController1 {
     public TextField PasswordTextField;
     public Spinner<Integer> NumberOfParticipants;
 
+    public static Listener listener;
+    public static Thread speakerThread;
+
+    public Button Talk;
+
     @FXML
     public void switchToMainMenu(ActionEvent event) throws IOException {
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainMenu2.fxml")));
@@ -47,12 +51,16 @@ public class SceneController1 {
 
     @FXML
     public void LeaveRoom(ActionEvent event) throws IOException {
+
         if (EncryptedVoiceChat.connectedToRoom) {
+
+            EncryptedVoiceChat.connectedToRoom = false;
+            if (speakerThread != null) {
+                speakerThread.interrupt();
+            }
             ParticipantData participantData1 = new ParticipantData(ParticipantOpcode.LEAVE, EncryptedVoiceChat.port);
             EncryptedVoiceChat.socket.getOutputStream().write(participantData1.getBytes());
             EncryptedVoiceChat.socket.getOutputStream().flush();
-
-            EncryptedVoiceChat.connectedToRoom = false;
 
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainMenu2.fxml")));
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -75,44 +83,50 @@ public class SceneController1 {
 
     @FXML
     public void switchToServerList(ActionEvent event) throws IOException {
-
-        final int serverNameLimit = 12;
-
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ListServer.fxml")));
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        ListView lv = (ListView) root.getChildrenUnmodifiable().get(0);
-
-        ParticipantData participantData = new ParticipantData(ParticipantOpcode.LIST_SERVERS, EncryptedVoiceChat.port);
-        EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
-
-        byte[] buffer = new byte[1024];
-
-        EncryptedVoiceChat.socket.getInputStream().read(buffer);
-        Packet packet = Packet.parse(buffer);
-        if (packet instanceof ParticipantACK) {
-            ParticipantACK participantACK = (ParticipantACK) packet;
-            for (String param : participantACK.getParams()) {
-                String name = param.split(";")[0];
-                for (int i = serverNameLimit - name.length(); i > 0; i--)
-                    name = name.concat("  ");
-                if (name.length() % 2 != 0) name = name.concat("  ");
-                String currentParticipants = param.split(";")[1].split("/")[0];
-                String maxParticipants = param.split(";")[1].split("/")[1];
-                Label serverNameLabel = new Label(name);
-                serverNameLabel.setAlignment(Pos.CENTER_LEFT);
-                Label participantsLabel = new Label("(" + currentParticipants + "/" + maxParticipants + ")");
-                participantsLabel.setAlignment(Pos.CENTER_RIGHT);
-                HBox hbox = new HBox(serverNameLabel, participantsLabel);
-                hbox.setSpacing(150);
-                hbox.setAlignment(Pos.CENTER);
-//                hbox.setSpacing(180);
-                lv.getItems().add(hbox);
-                EncryptedVoiceChat.chatrooms.add(param);
+            if (listener!= null) {
+                listener.setSocketBroken(true);
+//                listener.setSocket(null);
+                listener.interrupt();
             }
-        } else if (packet instanceof ErrorPacket) {
-            ErrorPacket errorPacket = (ErrorPacket) packet;
-            ServerConnection.displayError(errorPacket.getErrorOpcode() + "; " + errorPacket.getErrorMsg());
-        }
+
+
+            final int serverNameLimit = 12;
+
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ListServer.fxml")));
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            ListView lv = (ListView) root.getChildrenUnmodifiable().get(0);
+
+            ParticipantData participantData = new ParticipantData(ParticipantOpcode.LIST_SERVERS, EncryptedVoiceChat.port);
+            EncryptedVoiceChat.socket.getOutputStream().write(participantData.getBytes());
+
+            byte[] buffer = new byte[1024];
+
+            EncryptedVoiceChat.socket.getInputStream().read(buffer);
+            Packet packet = Packet.parse(buffer);
+            if (packet instanceof ParticipantACK) {
+                ParticipantACK participantACK = (ParticipantACK) packet;
+                for (String param : participantACK.getParams()) {
+                    String name = param.split(";")[0];
+                    for (int i = serverNameLimit - name.length(); i > 0; i--)
+                        name = name.concat("  ");
+                    if (name.length() % 2 != 0) name = name.concat("  ");
+                    String currentParticipants = param.split(";")[1].split("/")[0];
+                    String maxParticipants = param.split(";")[1].split("/")[1];
+                    Label serverNameLabel = new Label(name);
+                    serverNameLabel.setAlignment(Pos.CENTER_LEFT);
+                    Label participantsLabel = new Label("(" + currentParticipants + "/" + maxParticipants + ")");
+                    participantsLabel.setAlignment(Pos.CENTER_RIGHT);
+                    HBox hbox = new HBox(serverNameLabel, participantsLabel);
+                    hbox.setSpacing(150);
+                    hbox.setAlignment(Pos.CENTER);
+//                hbox.setSpacing(180);
+                    lv.getItems().add(hbox);
+                    EncryptedVoiceChat.chatrooms.add(param);
+                }
+            } else if (packet instanceof ErrorPacket) {
+                ErrorPacket errorPacket = (ErrorPacket) packet;
+                ServerConnection.displayError(errorPacket.getErrorOpcode() + "; " + errorPacket.getErrorMsg());
+            }
 
 
         HBox hBox = new HBox(root);
@@ -125,7 +139,7 @@ public class SceneController1 {
     public void listViewOnChange(Event event) {
        ListView<HBox> lv = (ListView<HBox>) event.getSource();
        HBox hbox = lv.getSelectionModel().getSelectedItem();
-       EncryptedVoiceChat.selectedRoom = ((Label) hbox.getChildrenUnmodifiable().get(0)).getText();
+       EncryptedVoiceChat.selectedRoom = ((Label) hbox.getChildrenUnmodifiable().get(0)).getText().replace(" ", "");
         System.out.println(EncryptedVoiceChat.selectedRoom);
     }
 
@@ -160,6 +174,10 @@ public class SceneController1 {
             scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
+
+            listener = new Listener(EncryptedVoiceChat.socket);
+            listener.start();
+
         }
 
 
@@ -212,5 +230,49 @@ public class SceneController1 {
         //update stage when we get new person to join room
 
 
+    }
+
+    @FXML
+    public void talkButton(ActionEvent event)  {
+        new Thread( () -> {
+        AudioCapture audioCapture = new AudioCapture();
+        new Thread(audioCapture::startCapture).start();
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            audioCapture.stopCapture();
+
+            FileInputStream fileIn = null;
+            try {
+                fileIn = new FileInputStream("audio.wav");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            SoundPacket soundPacket = new SoundPacket(PacketOpcode.SRQ, EncryptedVoiceChat.port);
+            try {
+                EncryptedVoiceChat.socket.getOutputStream().write(soundPacket.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ObjectOutputStream objectOutputStream = null;
+            try {
+                objectOutputStream = new ObjectOutputStream(EncryptedVoiceChat.socket.getOutputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                objectOutputStream.writeObject(fileIn.readAllBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
