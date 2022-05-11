@@ -1,10 +1,12 @@
 package edu.oswego.cs;
 
+import edu.oswego.cs.network.opcodes.PacketOpcode;
 import edu.oswego.cs.network.opcodes.ParticipantOpcode;
 import edu.oswego.cs.network.packets.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
+import javax.sound.sampled.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
@@ -20,8 +22,8 @@ public class ServerConnection {
     public static boolean connected = false;
     public BooleanProperty connet = new SimpleBooleanProperty(this, "connected", false);
 
-    static String connectionHost = "pi.cs.oswego.edu";
-    static int connectionPort = 26990;
+    static String connectionHost = "localhost";
+    static int connectionPort = 15555;
 
     public boolean isConnet() {
         return connet.get();
@@ -73,6 +75,7 @@ public class ServerConnection {
 
                     byte[] buffer = new byte[1024];
                     in.read(buffer);
+
                     Packet packet = Packet.parse(buffer);
                     if (packet instanceof ParticipantACK) {
                         ParticipantACK participantACK = (ParticipantACK) packet;
@@ -81,14 +84,36 @@ public class ServerConnection {
                             System.out.println(param);
                         }
                     }
-                    if (packet instanceof DebugPacket) {
+                    else if (packet instanceof SoundPacket) {
+                        if (packet.getOpcode() == PacketOpcode.SACK) {
+                            try {
+                                ObjectInputStream objectInputStream = new ObjectInputStream(finalSocket.getInputStream());
+                                byte[] soundData = (byte[]) objectInputStream.readObject();
+                                FileOutputStream fileOut = new FileOutputStream("received_audio.wav");
+                                fileOut.write(soundData);
+//
+                                fileOut.close();
+
+                                AudioInputStream stream = AudioSystem.getAudioInputStream(new File("received_audio.wav"));
+                                AudioFormat format = stream.getFormat();
+                                DataLine.Info info = new DataLine.Info(Clip.class, format);
+                                Clip clip = (Clip) AudioSystem.getLine(info);
+                                clip.open(stream);
+                                clip.start();
+
+                            } catch (Exception e) {e.printStackTrace();}
+
+                        }
+                    }
+                    else if (packet instanceof DebugPacket) {
                         DebugPacket debugPacket = (DebugPacket) packet;
                         displayInfo("Debug Message From PORT " + debugPacket.getPort() + "\t" + debugPacket.getMsg());
                     }
-                    if (packet instanceof ErrorPacket) {
+                    else if (packet instanceof ErrorPacket) {
                         ErrorPacket errorPacket = (ErrorPacket) packet;
                         displayError(errorPacket.getErrorOpcode() + "; " + errorPacket.getErrorMsg());
                     }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -123,6 +148,20 @@ public class ServerConnection {
                 ParticipantData participantData = new ParticipantData(ParticipantOpcode.LEAVE, port);
                 socket.getOutputStream().write(participantData.getBytes());
                 socket.getOutputStream().flush();
+            }
+            else if (userIn.contains("TALK")) {
+                AudioCapture audioCapture = new AudioCapture();
+                new Thread(audioCapture::startCapture).start();
+                Thread.sleep(5000);
+                audioCapture.stopCapture();
+
+                FileInputStream fileIn = new FileInputStream("audio.wav");
+                SoundPacket soundPacket = new SoundPacket(PacketOpcode.SRQ, port);
+                socket.getOutputStream().write(soundPacket.getBytes());
+
+                Thread.sleep(1000);
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                objectOutputStream.writeObject(fileIn.readAllBytes());
             }
 
         }

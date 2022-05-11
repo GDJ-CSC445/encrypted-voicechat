@@ -21,7 +21,7 @@ public class AudioCapture {
     private double audioDuration;
     public Thread thread;
     public TargetDataLine dataLine;
-    String fileName = "audio_test.wav";
+    String fileName = "audio.wav";
     File wavFile = new File(fileName);
 
 
