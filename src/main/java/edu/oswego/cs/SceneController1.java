@@ -1,5 +1,6 @@
 package edu.oswego.cs;
 
+import edu.oswego.cs.network.opcodes.ErrorOpcode;
 import edu.oswego.cs.network.opcodes.PacketOpcode;
 import edu.oswego.cs.network.opcodes.ParticipantOpcode;
 import edu.oswego.cs.network.packets.*;
@@ -167,6 +168,13 @@ public class SceneController1 {
         System.out.println("OPCODE: " + packet.getOpcode() + "; ");
         if (packet instanceof ErrorPacket) {
             System.out.println("Error: " + ((ErrorPacket) packet).getErrorOpcode());
+            if (((ErrorPacket) packet).getErrorOpcode() == ErrorOpcode.CHATROOM_FULL) {
+                Label fullRoomLabel = (Label) root.lookup("#errorFullRoomLabel");
+                fullRoomLabel.setText("Room is Full");
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            }
         } else if (packet instanceof ParticipantACK) {
             EncryptedVoiceChat.connectedToRoom = true;
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ActiveChat.fxml")));
@@ -182,21 +190,6 @@ public class SceneController1 {
 
 
     }
-
-//        if (packet instanceof ErrorPacket) {
-//            ErrorPacket errorPacket = (ErrorPacket) packet;
-//            ServerConnection.displayError(errorPacket.getErrorOpcode() + "; " + errorPacket.getErrorMsg());
-//            VBox dialogVbox = new VBox(20);
-//            dialogVbox.getChildren().add(new Text("This is a Dialog"));
-//            Scene dialogScene = new Scene(dialogVbox, 300, 200);
-//
-//            stage.setScene(dialogScene);
-//            stage.show();
-//            return;
-//        }
-
-
-
 
     @FXML
     public void createServer(ActionEvent event) throws IOException {
@@ -227,8 +220,6 @@ public class SceneController1 {
             stage.setScene(scene);
             stage.show();
         }
-        //update stage when we get new person to join room
-
 
     }
 
