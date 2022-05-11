@@ -30,6 +30,8 @@ public abstract class Packet {
             case ERR: return PacketFactory.parseErrorPacket(bytes);
             case PARTICIPANT_ACK: return PacketFactory.parseParticipantACKPacket(bytes);
             case DEBUG: return PacketFactory.parseDebugPacket(bytes);
+            case SRQ : return PacketFactory.parseSoundDataPacket(bytes);
+            case SACK: return PacketFactory.parseSoundDataPacket(bytes);
             default: ;
         }
         return null;
