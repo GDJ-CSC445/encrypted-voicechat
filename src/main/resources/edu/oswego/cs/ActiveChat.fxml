@@ -18,7 +18,7 @@
             <Font size="20.0"/>
          </font>
       </Button>
-      <Button id="B" layoutX="253.0" layoutY="206.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="78.0"
+      <Button id="B" layoutX="253.0" layoutY="206.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="78.0" onAction="#talkButton"
               text="Talk">
          <font>
             <Font size="20.0"/>
